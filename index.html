@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul Aesthetic: Tableau Data Personality</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500;700&family=Montserrat:wght@300;400;600&display=swap');
+
+        :root {
+            --base-cream: #F9F7F2;
+            --soft-beige: #EFE9E1;
+            --dusty-rose: #D4A373; /* 調整後的藕粉色調，偏向更高級的莫蘭迪色 */
+            --mauve-pink: #E7C6C6;
+            --text-dark: #4A4A4A;
+            --text-muted: #8E8E8E;
+        }
+
+        body {
+            background-color: var(--base-cream);
+            font-family: 'Noto Serif TC', serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 650px;
+            padding: 60px 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .progress-header {
+            margin-bottom: 40px;
+        }
+
+        .progress-bar-bg {
+            height: 2px;
+            background: var(--soft-beige);
+            width: 100%;
+            position: relative;
+        }
+
+        #progress-bar-fill {
+            height: 2px;
+            background: var(--mauve-pink);
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .question-title {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            font-weight: 500;
+            margin-bottom: 40px;
+            color: var(--text-dark);
+            letter-spacing: 0.05em;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 20px 30px;
+            margin-bottom: 15px;
+            background: white;
+            border: 1px solid var(--soft-beige);
+            border-radius: 12px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .option-btn:hover {
+            border-color: var(--mauve-pink);
+            background-color: var(--base-cream);
+            color: var(--text-dark);
+            transform: translateY(-2px);
+        }
+
+        .result-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 0.1em;
+            color: var(--dusty-rose);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .tag-minimal {
+            display: inline-block;
+            padding: 5px 15px;
+            background: var(--soft-beige);
+            border-radius: 30px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1.5rem;
+        }
+
+        .fade-in {
+            animation: fadeIn 1.2s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-action {
+            padding: 15px 40px;
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background-color: var(--mauve-pink);
+            color: white;
+            box-shadow: 0 10px 20px rgba(231, 198, 198, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #dfb3b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--soft-beige);
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .data-advice-box {
+            background: var(--base-cream);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: left;
+            border-left: 3px solid var(--mauve-pink);
+        }
+
+        .decoration-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--mauve-pink);
+            border-radius: 50%;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container" id="app">
+    <!-- 初始畫面 -->
+    <div id="intro-view" class="text-center fade-in">
+        <span class="tag-minimal">Inner Landscape Analysis</span>
+        <h1 class="text-3xl font-light mb-8 italic" style="color: var(--text-dark);">潛意識與數據美學</h1>
+        <p class="text-sm text-gray-400 mb-12 leading-relaxed" style="font-weight: 300; letter-spacing: 0.1em;">
+            卸下外界的喧囂，在米白與藕粉的安靜中，<br>
+            重新覺察內心的質地，定義你的視覺特質。
+        </p>
+        <button onclick="startQuiz()" class="btn-action btn-primary">開始探索</button>
+        <div class="decoration-dot"></div>
+    </div>
+
+    <!-- 測驗進行 -->
+    <div id="quiz-view" class="hidden">
+        <div class="progress-header">
+            <div class="flex justify-between items-end mb-2">
+                <span id="step-count" class="text-[10px] uppercase tracking-widest text-gray-400">Step 01 / 05</span>
+                <span class="text-[10px] text-gray-300">Inner Peace</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="progress-bar-fill"></div>
+            </div>
+        </div>
+        <h2 id="question-text" class="question-title"></h2>
+        <div id="options-container"></div>
+    </div>
+
+    <!-- 結果顯示 -->
+    <div id="result-view" class="hidden text-center fade-in">
+        <span class="tag-minimal" id="result-tag"></span>
+        <p class="text-[10px] uppercase tracking-[0.4em] text-gray-300 mb-4">Your Soul Texture</p>
+        <h1 id="result-title" class="result-title"></h1>
+        <div id="result-description" class="text-sm text-gray-500 leading-relaxed italic mb-8 px-4 font-light"></div>
+        
+        <div class="data-advice-box">
+            <h4 class="text-[11px] font-bold uppercase tracking-widest mb-3" style="color: var(--dusty-rose);">✦ Tableau 視覺化特質分析</h4>
+            <p id="data-advice" class="text-xs text-gray-500 leading-relaxed"></p>
+        </div>
+
+        <div class="flex flex-col items-center">
+            <button onclick="saveResult()" class="btn-action btn-primary w-full sm:w-auto">下載分析報告</button>
+            <button onclick="restartQuiz()" class="btn-action btn-secondary w-full sm:w-auto mt-4">重新測驗</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            q: "在一個完全靜謐的空間裡，你最先注意到的細節是？",
+            options: [
+                { text: "窗簾透進來的柔和光影變化", type: "beige" },
+                { text: "空間中物體擺放的對稱感", type: "grey" },
+                { text: "空氣中隱約散發的溫潤香氣", type: "pink" },
+                { text: "牆面上極細微的紋理起伏", type: "taupe" }
+            ]
+        },
+        {
+            q: "當你處理一份繁雜的 Tableau 數據時，你的切入點是？",
+            options: [
+                { text: "先用宏觀的角度看整體的平衡點", type: "beige" },
+                { text: "立刻找出邏輯上的斷點與衝突", type: "grey" },
+                { text: "尋找數據中具有情感溫度的異常值", type: "pink" },
+                { text: "將細節分類，追求極致的秩序感", type: "taupe" }
+            ]
+        },
+        {
+            q: "你理想中的溝通方式更傾向於？",
+            options: [
+                { text: "點到為止，留下餘裕與美感", type: "beige" },
+                { text: "精準到位，不帶冗贅的資訊", type: "grey" },
+                { text: "溫潤共情，在理解中達成共識", type: "pink" },
+                { text: "嚴謹細膩，用結構說服他人", type: "taupe" }
+            ]
+        },
+        {
+            q: "面對一份重要的決策報告，你希望它給人的第一視覺感受是？",
+            options: [
+                { text: "簡潔優雅，充滿呼吸感", type: "beige" },
+                { text: "專業冷靜，具備權威度", type: "grey" },
+                { text: "溫柔堅定，讓人產生信任", type: "pink" },
+                { text: "深度厚實，展現專業細節", type: "taupe" }
+            ]
+        },
+        {
+            q: "你認為「效率」與「質感」之間的關係是？",
+            options: [
+                { text: "質感源於對效率的極簡提煉", type: "grey" },
+                { text: "效率應該為極致的體驗服務", type: "pink" },
+                { text: "兩者在平衡中產生和諧的美", type: "beige" },
+                { text: "穩定的質感來自高效的紀律", type: "taupe" }
+            ]
+        }
+    ];
+
+    const results = {
+        beige: {
+            title: "Soft Minimalism",
+            tag: "均衡優雅者",
+            desc: "你的靈魂如同晨曦下的米白織品，溫柔且具備極強的包容力。你擅長在混亂中維持美感與平衡，不追求瞬間的奪目，卻擁有一種讓人安定的持久魅力。",
+            advice: "在 Tableau 創作中，你適合使用減法美學。建議多留白 (White Space)，使用莫蘭迪色系。你的儀表板適合展現長期趨勢，透過和諧的比例而非強烈的對比來傳達資訊。"
+        },
+        grey: {
+            title: "Pure Logicality",
+            tag: "冷靜架構師",
+            desc: "你的靈魂擁有一種極致的純淨與理性。你對細節的敏銳度極高，能瞬間洞察事物背後的邏輯架構。你是團隊中穩定、專業且不可或缺的決策指引者。",
+            advice: "你非常適合設計高性能的技術性報表。在 Tableau 中，建議多使用參數化 (Parameter) 功能與精密的篩選器。你的視覺語言應該是精確且無偏見的，使用灰階與單一強調色會更有高級感。"
+        },
+        pink: {
+            title: "Mauve Empathy",
+            tag: "感性溝通者",
+            desc: "你的靈魂帶著藕粉色的溫潤。你具備卓越的敘事能力，能將生硬的數字轉化為充滿溫度的故事。你關注人的需求，這讓你的工作成果總是能觸動人心。",
+            advice: "你適合製作具有敘事性 (Storytelling) 的儀表板。利用 Tableau 的故事板功能，將分析過程以起承轉合的方式呈現。色彩上建議選用藕粉、暗金與米白的組合，建立信任感。"
+        },
+        taupe: {
+            title: "Textured Wisdom",
+            tag: "深厚實踐家",
+            desc: "你的靈魂具有如地層般的層次感。你注重專業技術的打磨，追求極致的完美。你分析問題時不僅看表面，更能深挖到最細微的結構層次。",
+            advice: "在視覺化上，你適合展示複雜數據的深層關聯（如桑基圖或詳細的分層鑽研）。建議在 Tableau 中強化數據說明的細節與層級導覽，讓深度使用者能感受到你設計的嚴謹性。"
+        }
+    };
+
+    let currentQuestion = 0;
+    let scores = { beige: 0, grey: 0, pink: 0, taupe: 0 };
+
+    function startQuiz() {
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('question-text').innerText = q.q;
+        document.getElementById('step-count').innerText = `Step ${String(currentQuestion + 1).padStart(2, '0')} / ${questions.length}`;
+        document.getElementById('progress-bar-fill').style.width = `${(currentQuestion / questions.length) * 100}%`;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn fade-in';
+            btn.style.animationDelay = `${idx * 0.1}s`;
+            btn.innerText = opt.text;
+            btn.onclick = () => selectOption(opt.type);
+            container.appendChild(btn);
+        });
+    }
+
+    function selectOption(type) {
+        scores[type]++;
+        currentQuestion++;
+        
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-view').classList.add('hidden');
+        document.getElementById('result-view').classList.remove('hidden');
+        document.getElementById('progress-bar-fill').style.width = `100%`;
+        
+        let maxType = 'beige';
+        let maxScore = -1;
+        for (const type in scores) {
+            if (scores[type] > maxScore) {
+                maxScore = scores[type];
+                maxType = type;
+            }
+        }
+        
+        const result = results[maxType];
+        document.getElementById('result-title').innerText = result.title;
+        document.getElementById('result-tag').innerText = result.tag;
+        document.getElementById('result-description').innerText = result.desc;
+        document.getElementById('data-advice').innerText = result.advice;
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        scores = { beige: 0, grey: 0, pink: 0, taupe: 0 };
+        document.getElementById('result-view').classList.add('hidden');
+        document.getElementById('intro-view').classList.remove('hidden');
+    }
+
+    function saveResult() {
+        const title = document.getElementById('result-title').innerText;
+        const text = `我的靈魂質地：${title}\n視覺化分析風格：${document.getElementById('result-tag').innerText}`;
+        
+        const dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+        
+        const btn = event.target;
+        btn.innerText = "已複製結果！";
+        setTimeout(() => btn.innerText = "下載分析報告", 2000);
+    }
+</script>
+
+</body>
+</html>
